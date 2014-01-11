@@ -1,0 +1,13 @@
+;-----------------------------------------
+; PMWHOAMI.DEF module definition file v1.1
+;-----------------------------------------
+
+NAME           PMWHOAMI  WINDOWAPI
+
+DESCRIPTION    'whoami for OS/2 Presentation Manager by Ryan C. Gordon.'
+STACKSIZE      20000
+BASE=0x10000
+PROTMODE
+
+; end of pmwhoami.def
+

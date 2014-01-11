@@ -1,0 +1,185 @@
+********************************************
+* WHOAMI and PMWHOAMI for 32-bit OS/2 v1.2 *
+********************************************
+
+Here's another simplistic but useful-beyond-words program.
+
+This program will tell you what your current domain name and IP address is.
+Granted, this won't do you ANY good unless you are connected to some sort of
+TCP/IP (Internet-type) network, by SLIP, PPP, or other means.
+
+***********
+* Usage : *
+***********
+Usage is like so:
+whoami.exe [/K] [/HOST | /IP] [/EXE <runthis.exe> [cmdline1] [cmdline2] [...]]
+
+It will return something along these lines:
+
+foo.bar.com  (205.184.158.43)
+
+or (if you specified whoami /IP)
+
+205.184.158.43
+
+OR... (if you specified whoami /HOST)
+
+foo.bar.com
+
+
+to stdout. ...So you can redirect this output elsewhere, for logging or use
+with a batch file or piped to another program. The possibilities are endless.
+
+The optional "/K" command line sets the 'KEEP GOING' option, where, in case
+hostname information can't be retrieved, this program will continue to attempt
+to retrieve it until either it has, or you shut down the program.
+
+What good is that? I'm glad you asked. Let's say you have a bunch of programs
+that you don't want to run until after you've connected, such as an email
+client. Do this: make a .cmd file...goppp.cmd, for example:
+
+@echo off
+start /min myprogs.cmd
+SLIPPM
+
+
+
+...and myprogs.cmd...
+
+whoami /k
+rem Nothing below this line runs until whoami returns (we're connected.)
+
+etc...
+
+
+
+Now, rather than call SLIPPM.EXE (the 'dial other internet providers' icon),
+call goppp.cmd.
+
+ok, so it's complicated. :)  But besides that, it's still handy.
+
+In case you missed it, specifying a /HOST on the command line will give you
+just the domain name (foo.bar.com...or whatever...the 'english' version of
+/IP), and /IP on the command line will return just the IP address (those
+four numbers, separated by periods.)
+
+Also, there is a Presentation Manager application version of this included,
+called PMWHOAMI.EXE. This is prettier, but can't be redirected. (it ain't
+stdout...) Also, the trick I just illustrated above won't work as well with
+the PM version...although it accepts the "/K" command line in the same fashion,
+you'd have to exit the program before the batch file could continue. However,
+it is prettier to look at. (and /HOST or /IP work with it.) However, at this
+time /EXE doesn't work with it either. It can be done, I'd just have to
+re-write a portion of the code...and I'm just too lazy for that. :)
+
+  therefore : "Next Version."  :)
+
+
+If, you have a program that needs a HOSTNAME environment variable set, and you
+are dynamically IPed (you don't know your hostname until each connection...)
+You can run your program through whoami.exe (This is only in the text version
+right now...)
+
+ run : whoami.exe /host /exe myprog.exe cmdline1 cmdline2
+
+...will find out your hostname, and store it to the HOSTNAME environment
+variable, and then run myprog.exe with the command line "cmdline1 cmdline2"
+
+         *** /EXE MUST BE THE LAST PARAMETER THAT YOU PASS WHOAMI. ***
+
+I would specify "/k" and "/host" if you plan on using the "/exe" parameter.
+Most programs seem to expect HOSTNAME to be in that format, and without "/k"
+there's a possibility that HOSTNAME will be set to
+"Can't get hostname information." However, it's all optional.
+
+
+***************
+* Neat trick: *
+***************
+Oh, if the HOSTNAME variable is set to start with, you can lie to this program.
+if you
+
+ SET HOSTNAME=voicenet.com
+
+and then run whoami.exe, you'll get this:
+voicenet.com  (192.204.28.35)
+
+
+*****************
+* Compatibility *
+*****************
+WHOAMI Compatibility: This should work with OS/2 2.0 and higher with some
+                      sort of TCP/IP support.
+
+******************
+* Special Thanks *
+******************
+Special Thanks to Nathan Zych, who got me off my lazy ass to write version 1.2.
+
+
+***********************************************
+* "Hey! Why isn't this lousy thing working?!" *
+***********************************************
+Troubleshooting:
+
+--- WHOAMI.EXE bitches about not finding a DLL. What's the deal?
+
+You need the EMX runtime to use the whoami programs. These shrink the size of
+the executables DRAMATICALLY. Plus, if you find yourself using a bunch of
+rinky-dink freeware utilities from the net like this one, you're eventually
+going to need it anyhow...The runtime can be found on OS/2 supporting BBSes
+globally, or via FTP from:
+
+ftp://hobbes.nmsu.edu/os2/unix/emx09b/emxrt.zip
+
+Follow the instructions for installation (I think you just unzip into your
+LIBPATH or something...) and then whoami will (probably) work.
+
+
+--- I can't run DOS or Presentation Manager programs from the /EXE option.
+
+I'll fix this : next version. Feh.
+
+
+--- PMWHOAMI.EXE tells me to use the 'text version' whenever I specify "/EXE".
+
+Again, next version. This one's just a matter of redesigning a bit of the
+source code. The workaround for now is to use WHOAMI.EXE (not PMWHOAMI), which
+will (for the most part) not complain about the /EXE option.
+
+
+
+***************
+* Source code *
+***************
+Finally, the entire source code is included. I wrote this using EMX 0.9b, and
+BSD sockets (available from ftp://hobbes.nmsu.edu/os2/unix/emx09b/). However,
+I make no claim that this is 'Good' or 'clean' coding. I tried to, through a
+bunch of #ifdefs, put the VIO and PM versions of this program in the same
+source file. It's kinda messy, and there are a few kludges to accomodate both
+versions...regardless of this programming experimental disaster, it works.
+Feel free to use this source code in ANY way you see fit.
+
+This program if freeware. If you get any use out of it, I would appreciate an
+email telling me you like it (mailto:warped42@ix.netcom.com), or an email
+telling me you hate it...or something.   :)
+
+Enjoy.
+
+                                 --Ryan C. Gordon (warped42@ix.netcom.com)
+
+
+--------------
+Version history:
+ v1.0 : It works. It works well.
+ v1.1 : Added /IP and /HOST command line options.
+        Would like to add an /EIP, /EHOST and /EALL (or something like that)
+           that'll SET this information in an Environment variable for the
+           current session. Anyone know what API can do this?
+        Shrunk code a BUNCH through various compiler options and .DEF file
+           instructions.
+ v1.2 : Didn't add /EIP, /EHOST, and /EALL, since the environment string
+        changes vanish when whoami terminates. However, added /EXE option to
+        run a program from whoami.exe which will have the new environment.
+--------------
+

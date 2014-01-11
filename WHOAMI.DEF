@@ -1,0 +1,13 @@
+;---------------------------------------
+; WHOAMI.DEF module definition file v1.1
+;---------------------------------------
+
+NAME           WHOAMI  WINDOWCOMPAT
+
+DESCRIPTION    'whoami for OS/2 (VIO mode) by Ryan C. Gordon.'
+STACKSIZE      20000
+BASE=0x10000
+PROTMODE
+
+; end of whoami.def
+

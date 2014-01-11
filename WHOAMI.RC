@@ -1,0 +1,9 @@
+/*
+ * Resource script for whoami.
+ *
+ *  Ryan wrote this. Yeah.
+ */
+
+POINTER 1 whoami.ico
+
+/* end of whoami.rc */
